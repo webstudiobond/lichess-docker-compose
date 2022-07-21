@@ -66,7 +66,7 @@ Linked docker containers will automatically have hostnames.**
      --volume ./cache:/home/lichess/.cache \
      --user 1000:1000 \
      --workdir /home/lichess/lila \
-     sb/lila_base
+     sb/lichess_base
    
    # Build the CSS and JS
    ./ui/build
