@@ -89,24 +89,24 @@ Linked docker containers will automatically have hostnames.**
    # run mongo db
    docker run \
      --name lila_db \
-     --interactive \
-     --tty \
      --rm \
      --volume $lichess_path/lila_mongo/db:/data/db \
      --volume $lichess_path/lila_mongo/configdb:/data/configdb \
      --volume $lichess_path/lila/source/bin/mongodb/indexes.js:/host/lila/bin/mongodb/indexes.js \
      --volume $lichess_path/lila-db-seed:/host/lila-db-seed \
      mongo:5.0
+```
    
+   In new terminal window
+   ```
    # create db indices
-   mongo lichess /host/lila/bin/mongodb/indexes.js
+   docker exec -it lila_db mongo lichess /host/lila/bin/mongodb/indexes.js
    
    # optional seed database
-   mongorestore /host/lila-db-seed/dump
-   
-   # exit
-   exit
+   docker exec -it lila_db mongorestore /host/lila-db-seed/dump
    ```
+   Stop mongo db. `Ctrl + c` in first terminal window with mongo db.
+
 14. Run lichess docker compose.
 
 `docker compose -f ./docker-compose.yaml up -d`
