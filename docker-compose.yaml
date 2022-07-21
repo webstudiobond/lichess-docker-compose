@@ -1,0 +1,67 @@
+version: "3.3"
+
+services:
+        redis:
+          image: redis:6-alpine
+          container_name: lila_redis
+          restart: always
+          volumes:
+            - ./lila_redis:/data
+
+        db:
+          image: mongo:5.0
+          container_name: lila_db
+          # ports:
+          #   - 127.0.0.1:27017:27017
+          volumes:
+            - ./lila_mongo/db:/data/db
+            - ./lila_mongo/configdb:/data/configdb
+            - ./lila/source/bin/mongodb/indexes.js:/host/lila/bin/mongodb/indexes.js
+            - ./lila-db-seed:/host/lila-db-seed
+          restart: always
+
+        lila:
+           image: sb/lichess_base
+           container_name: lila
+           depends_on:
+             - db
+             - redis
+           links:
+             - db:db
+             - redis:redis
+           volumes:
+             - ./lila/source:/home/lichess/lila
+             - ./lila/data/application.conf:/home/lichess/lila/conf/application.conf
+             - ./cache:/home/lichess/.cache
+           ports:
+             - 127.0.0.1:9663:9663
+           restart: always
+           environment:
+             TZ: Europe/Kiev
+             UID: 1000
+             GID: 1000
+           working_dir: /home/lichess/lila
+           entrypoint: ./lila ~run
+
+        lila-ws:
+           image: sb/lichess_base
+           container_name: lila-ws
+           depends_on:
+             - db
+             - redis
+           links:
+             - db:db
+             - redis:redis
+           ports:
+             - 127.0.0.1:9664:9664
+           volumes:
+             - ./lila-ws/source:/home/lichess/lila-ws
+             - ./lila-ws/data/ws.conf:/home/lichess/lila-ws/data/ws.conf
+             - ./cache:/home/lichess/.cache
+           restart: always
+           environment:
+             TZ: Europe/Kiev
+             UID: 1000
+             GID: 1000
+           working_dir: /home/lichess/lila-ws
+           entrypoint: sbt run -Dconfig.file=data/ws.conf
