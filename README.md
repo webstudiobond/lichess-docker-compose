@@ -6,11 +6,11 @@ Docker compose setup for Lichess development. Based on [`benediktwerner`](https:
 - time, and preferably a coffee machine (or actually, weed)
 
 ## Description
-- `lichess_base`   : A docker image, based on [`debian`](https://hub.docker.com/_/debian)`:stable-slim` that packages Scala, Java & NodeJS.
-- `lila`           : An example `application.conf` config for [lila](https://github.com/ornicar/lila) server.
-- `lila-ws`        : An example `ws.conf` config for [lila-ws](https://github.com/ornicar/lila-ws) server.
-- `nginx_examples` : An example `nginx.conf` for `chess.exaple.com`.
-- In `docker-compose.yaml` `redis`, `mongo`, `lila` and `lila-ws` services.
+- `lichess_base`       : A docker image, based on [`debian`](https://hub.docker.com/_/debian)`:stable-slim` that packages Scala, Java & NodeJS.
+- `lila`               : An example `application.conf` config for [lila](https://github.com/ornicar/lila) server.
+- `lila-ws`            : An example `ws.conf` config for [lila-ws](https://github.com/ornicar/lila-ws) server.
+- `nginx_examples`     : An example `nginx.conf` for `chess.exaple.com`.
+- `docker-compose.yaml`: `redis`, `mongo`, `lila` and `lila-ws` services.
 
 ## Usage
 
@@ -21,32 +21,41 @@ Linked docker containers will automatically have hostnames.**
 
 **Note: For example, the working folder will be `lichess`. Don't forget to change the path `./lichess`, shown in the examples below.**
 
-<br/>
 
 1. Navigate to the folder, where the project will be.
 2. Clone [this](https://github.com/seb81/lichess-docker-compose) repo to `./lichess` and `cd` into them.
-   ```git clone https://github.com/seb81/lichess-docker-compose ./lichess && cd ./lichess```
+
+   `git clone https://github.com/seb81/lichess-docker-compose ./lichess && cd ./lichess`
 3. Create a cache folder.
-   ```mkdir -p ./cache```
+
+   `mkdir -p ./cache`
 4. Create a source folder for `lila` and `lila-ws`.
-   ```mkdir -p ./{lila,lila-ws}/source```
+
+   `mkdir -p ./{lila,lila-ws}/source`
 5. Clone [lila](https://github.com/lichess-org/lila) repo to `./lila/source`.
-   ```git clone --recursive https://github.com/lichess-org/lila.git ./lila/source```
+
+   `git clone --recursive https://github.com/lichess-org/lila.git ./lila/source`
 6. Clone [lila-ws](https://github.com/lichess-org/lila-ws) repo to `./lila-ws/source`.
-   ```git clone https://github.com/lichess-org/lila-ws.git ./lila-ws/source```
+
+   `git clone https://github.com/lichess-org/lila-ws.git ./lila-ws/source`
 7. Parts of the site (like puzzles) require some minimal content to function. 
    Clone [lila-db-seed](https://github.com/lichess-org/lila-db-seed) repo.
-   ```git clone https://github.com/lichess-org/lila-db-seed.git```
-8. `chown` lila, lila-ws and cache.
-   ```chown -R 1000:1000 ./{lila,lila-ws,cache}```
+
+   `git clone https://github.com/lichess-org/lila-db-seed.git`
+8. Chown lila, lila-ws and cache.
+
+   `chown -R 1000:1000 ./{lila,lila-ws,cache}`
 9. Build the `lichess_base` image.
-   ```docker build --tag sb/lichess_base ./lichess_base/```
+
+   `docker build --tag sb/lichess_base ./lichess_base/`
 10. Edit the example configuration file located at `./lila/data/application.conf`.
-    ```nano ./lila/data/application.conf```
+
+    `nano ./lila/data/application.conf`
 11. Edit the CSRF origin in the example config file located at `./lila-ws/data/ws.conf`.
-    ```nano ./lila-ws/data/ws.conf```
+
+    `nano ./lila-ws/data/ws.conf`
 12. Run docker image `lichess_base` for setup [lila](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding).
-   ```
+```
    docker run \
      --name lila \
      --interactive \
@@ -58,15 +67,18 @@ Linked docker containers will automatically have hostnames.**
      --user 1000:1000 \
      --workdir /home/lichess/lila \
      sb/lila_base
+   
+   # Build the CSS and JS
+   ./ui/build
+   
+   # Start the SBT console
+   ./lila compile
+   
+   # exit
+   exit
    ```
-   Build the CSS and JS
-   ```./ui/build```
-   Start the SBT console
-   ```./lila```
-   Once the console has booted, you will see a `lila>` prompt. Type `compile` and sit back.
-   ```exit```
 13. Before the first run, you should create db indices. And (optional) [seed database](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding#optional-seed-database).
-   ```
+```
    docker run \
      --name lila_db \
      --interactive \
@@ -77,17 +89,20 @@ Linked docker containers will automatically have hostnames.**
      --volume ./lila/source/bin/mongodb/indexes.js:/host/lila/bin/mongodb/indexes.js \
      --volume ./lila-db-seed:/host/lila-db-seed \
      mongo:5.0
-   ```
-   create db indices
-   ```
+   
+   # create db indices
    mongo lichess /host/lila/bin/mongodb/indexes.js
-   ```
-   seed database
-   ```
+   
+   # optional seed database
    mongorestore /host/lila-db-seed/dump
+   
+   # exit
+   exit
    ```
-14. Run lichess docker compose
-```docker compose -f ./docker-compose.yaml up -d```
+14. Run lichess docker compose.
+
+`docker compose -f ./docker-compose.yaml up -d`
+
 15. You should also read the [Lichess Development Onboarding guide](https://github.com/ornicar/lila/wiki/Lichess-Development-Onboarding#installation) on the [Lichess GitHub](https://github.com/ornicar/lila/wiki) wiki for additional instructions on seeding the db, gaining admin access, or running suplementary services like fishnet for server analysis or playing vs Stockfish.
 
 
