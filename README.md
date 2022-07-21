@@ -56,14 +56,18 @@ Linked docker containers will automatically have hostnames.**
     `nano ./lila-ws/data/ws.conf`
 12. Run docker image `lichess_base` for setup [lila](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding).
 ```
+   # get full path to lichess folder
+   lichess_path=$(realpath .)
+   
+   # run docker image for buil and complile lila
    docker run \
      --name lila \
      --interactive \
      --tty \
      --rm \
-     --volume ./lila/source:/home/lichess/lila \
-     --volume ./lila/data/application.conf:/home/lichess/lila/conf/application.conf \
-     --volume ./cache:/home/lichess/.cache \
+     --volume $lichess_path/lila/source:/home/lichess/lila \
+     --volume $lichess_path/lila/data/application.conf:/home/lichess/lila/conf/application.conf \
+     --volume $lichess_path/cache:/home/lichess/.cache \
      --user 1000:1000 \
      --workdir /home/lichess/lila \
      sb/lichess_base
@@ -79,15 +83,19 @@ Linked docker containers will automatically have hostnames.**
    ```
 13. Before the first run, you should create db indices. And (optional) [seed database](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding#optional-seed-database).
 ```
+   # get full path to lichess folder
+   lichess_path=$(realpath .)
+   
+   # run mongo db
    docker run \
      --name lila_db \
      --interactive \
      --tty \
      --rm \
-     --volume ./lila_mongo/db:/data/db \
-     --volume ./lila_mongo/configdb:/data/configdb \
-     --volume ./lila/source/bin/mongodb/indexes.js:/host/lila/bin/mongodb/indexes.js \
-     --volume ./lila-db-seed:/host/lila-db-seed \
+     --volume $lichess_path/lila_mongo/db:/data/db \
+     --volume $lichess_path/lila_mongo/configdb:/data/configdb \
+     --volume $lichess_path/lila/source/bin/mongodb/indexes.js:/host/lila/bin/mongodb/indexes.js \
+     --volume $lichess_path/lila-db-seed:/host/lila-db-seed \
      mongo:5.0
    
    # create db indices
