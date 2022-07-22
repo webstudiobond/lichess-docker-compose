@@ -146,11 +146,21 @@ exit
 ```
    Stop mongo db. `Ctrl + c` in first terminal window with mongo db.
 
-14. Run lichess docker compose.
+14. Optional add ["play against the computer"](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding#optional-setup-play-with-the-computer). if you don't need it, comment out the services `lila-fishnet` and `lila-fishnet-client` in `docker-compose.yaml`
+
+```
+git clone https://github.com/lichess-org/lila-fishnet.git  ./lila-fishnet
+git clone --recursive https://github.com/lichess-org/fishnet.git ./fishnet
+chown -R 1000:1000 lila-db-seed /home/chess/lichess/{lila,lila-ws,cache,lila-fishnet,fishnet}
+```
+
+15. Optional: [setup Stockfish analysis](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding#optional-setup-stockfish-analysis). if you don't need it, comment out the service `lila-stockfish-analyse` in `docker-compose.yaml`
+
+16. Run lichess docker compose.
 
 `docker compose -f ./docker-compose.yaml up -d`
 
-15. You should also read the [Lichess Development Onboarding guide](https://github.com/ornicar/lila/wiki/Lichess-Development-Onboarding#installation) on the [Lichess GitHub](https://github.com/ornicar/lila/wiki) wiki for additional instructions on seeding the db, gaining admin access, or running suplementary services like fishnet for server analysis or playing vs Stockfish.
+17. You should also read the [Lichess Development Onboarding guide](https://github.com/ornicar/lila/wiki/Lichess-Development-Onboarding#installation) on the [Lichess GitHub](https://github.com/ornicar/lila/wiki) wiki for additional instructions on seeding the db, gaining admin access, or running suplementary services like fishnet for server analysis or playing vs Stockfish.
 
 
 ## Domain structure
