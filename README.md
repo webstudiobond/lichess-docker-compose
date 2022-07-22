@@ -129,7 +129,17 @@ sudo apt update && sudo apt install python3 python3-pip -y && pip3 install pymon
 python3 /home/lichess/lila-db-seed/spamdb/spamdb.py --help
 
 # example. import users 2 normal users and all special users from ./lila-db-seed/spamdb/data/uids.txt
-python3 /home/lichess/lila-db-seed/spamdb/spamdb.py --uri mongodb://db:27017/lichess --users 2 --password strongpassword_for_users_in_uids_without_password
+python3 /home/lichess/lila-db-seed/spamdb/spamdb.py \
+ --uri mongodb://db:27017/lichess \
+ --password strong_password \
+ --users 0 \
+ --posts 0 \
+ --blogs 0 \
+ --tours 0 \
+ --games 0 \
+ --follow 0 \
+ --teams 1 \
+ --no-timeline
 
 # exit
 exit
