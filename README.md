@@ -212,9 +212,4 @@ docker run -it --rm \
 * Attach to the Docker container (main process): `docker attach lila`
 * Open a shell as root in the running container: `docker exec -u 0 -it lila bash`
 
-In the above commands, `lila` is replaceable by `lila_redis`, `lila_db`, `lila-ws` and any container name in that manner.
-
-
-## TODO
-* Add fishnet.
-* Add "play against the computer"
+In the above commands, `lila` is replaceable by `lila_redis`, `lila_db`, `lila-ws`, `lila-fishnet`, `lila-fishnet-client` and `lila-stockfish-analysis`.
