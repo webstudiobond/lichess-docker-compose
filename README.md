@@ -173,7 +173,8 @@ ws.chess.example.com. 1	IN	CNAME   chess.meetings.pp.ua.
 If you do not want to add content from spamdb to the database, like me, but you need [special users](https://github.com/lichess-org/lila-db-seed#special-users). Go to website, create a user. Run docker container [`Mongo Express`](https://github.com/mongo-express/mongo-express) and edit collection `user4`. Just add role to user data, example lichess.waste.basket+sergei@gmail.com
 ```roles: [
     'ROLE_SUPER_ADMIN'
-],```
+],
+```
 ```
 docker run -it --rm \
     --name mongo-express \
