@@ -11,8 +11,8 @@ services:
         db:
           image: mongo:5.0
           container_name: lila_db
-          # ports:
-          #   - 127.0.0.1:27017:27017
+          ports:
+            - 127.0.0.1:27017:27017
           volumes:
             - ./lila_mongo/db:/data/db
             - ./lila_mongo/configdb:/data/configdb
@@ -21,47 +21,92 @@ services:
           restart: always
 
         lila:
-           image: sb/lichess_base
-           container_name: lila
-           depends_on:
-             - db
-             - redis
-           links:
-             - db:db
-             - redis:redis
-           volumes:
-             - ./lila/source:/home/lichess/lila
-             - ./lila/data/application.conf:/home/lichess/lila/conf/application.conf
-             - ./cache:/home/lichess/.cache
-           ports:
-             - 127.0.0.1:9663:9663
-           restart: always
-           environment:
-             TZ: Europe/Kiev
-             UID: 1000
-             GID: 1000
-           working_dir: /home/lichess/lila
-           entrypoint: ./lila ~run
+          image: sb/lichess_base
+          container_name: lila
+          depends_on:
+            - db
+            - redis
+          links:
+            - db:db
+            - redis:redis
+          volumes:
+            - ./lila/source:/home/lichess/lila
+            - ./lila/data/application.conf:/home/lichess/lila/conf/application.conf
+            # - ./cache:/home/lichess/.cache
+          ports:
+            - 127.0.0.1:9663:9663
+          restart: always
+          environment:
+            TZ: Europe/Kiev
+            UID: 1000
+            GID: 1000
+          working_dir: /home/lichess/lila
+          entrypoint: ./lila ~run
 
         lila-ws:
-           image: sb/lichess_base
-           container_name: lila-ws
-           depends_on:
-             - db
-             - redis
-           links:
-             - db:db
-             - redis:redis
-           ports:
-             - 127.0.0.1:9664:9664
-           volumes:
-             - ./lila-ws/source:/home/lichess/lila-ws
-             - ./lila-ws/data/ws.conf:/home/lichess/lila-ws/data/ws.conf
-             - ./cache:/home/lichess/.cache
-           restart: always
-           environment:
-             TZ: Europe/Kiev
-             UID: 1000
-             GID: 1000
-           working_dir: /home/lichess/lila-ws
-           entrypoint: sbt run -Dconfig.file=data/ws.conf
+          image: sb/lichess_base
+          container_name: lila-ws
+          depends_on:
+            - db
+            - redis
+            - lila
+          links:
+            - db:db
+            - redis:redis
+          ports:
+            - 127.0.0.1:9664:9664
+          volumes:
+            - ./lila-ws/source:/home/lichess/lila-ws
+            - ./lila-ws/data/ws.conf:/home/lichess/lila-ws/data/ws.conf
+            # - ./cache:/home/lichess/.cache
+          restart: always
+          environment:
+            TZ: Europe/Kiev
+            UID: 1000
+            GID: 1000
+          working_dir: /home/lichess/lila-ws
+          entrypoint: sbt run -Dconfig.file=data/ws.conf
+
+        lila-fishnet:
+          image: sb/lichess_base
+          container_name: lila-fishnet
+          depends_on:
+            - db
+            - redis
+            - lila
+          links:
+            - db:db
+            - redis:redis
+          ports:
+            - 127.0.0.1:9665:9665
+          volumes:
+            - ./lila-fishnet:/home/lichess/lila-fishnet
+            - ./lila-fishnet/data/application.conf:/home/lichess/lila-fishnet/conf/application.conf
+          restart: always
+          environment:
+            TZ: Europe/Kiev
+            UID: 1000
+            GID: 1000
+          working_dir: /home/lichess/lila-fishnet
+          entrypoint: sbt run -Dhttp.port=9665
+
+        lila-fishnet-client:
+          image: rust:latest
+          container_name: lila-fishnet-client
+          depends_on:
+            - db
+            - redis
+            - lila-fishnet
+          links:
+            - db:db
+            - redis:redis
+            - lila-fishnet:lila-fishnet
+          volumes:
+            - ./fishnet:/home/lichess/fishnet
+          restart: always
+          environment:
+            TZ: Europe/Kiev
+            UID: 1000
+            GID: 1000
+          working_dir: /home/lichess/fishnet
+          entrypoint: cargo run -- --endpoint http://lila-fishnet:9665/fishnet/
