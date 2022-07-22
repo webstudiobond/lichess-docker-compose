@@ -169,6 +169,23 @@ ws.chess.example.com. 1	IN	CNAME   chess.meetings.pp.ua.
 
 ```nginx -t && service nginx restart```
 
+## Optional
+If you do not want to add content from spamdb to the database, like me, but you need [special users](https://github.com/lichess-org/lila-db-seed#special-users). Go to website, create a user. Run docker container [`Mongo Express`](https://github.com/mongo-express/mongo-express) and edit collection `user4`. Just add role to user data, example lichess.waste.basket+sergei@gmail.com
+```roles: [
+    'ROLE_SUPER_ADMIN'
+],```
+```
+docker run -it --rm \
+    --name mongo-express \
+    --network lichess_default \
+    -p 8081:8081 \
+    -e ME_CONFIG_OPTIONS_EDITORTHEME="ambiance" \
+    -e ME_CONFIG_BASICAUTH_USERNAME="user_for_web_authentication" \
+    -e ME_CONFIG_BASICAUTH_PASSWORD="user_password_for_web_authentication" \
+    -e ME_CONFIG_MONGODB_URL="mongodb://db:27017/lichess" \
+    mongo-express
+```
+
 ## Useful commands
 
 * Stop and remove all the Compose containers: `docker compose down`
