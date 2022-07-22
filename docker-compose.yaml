@@ -110,3 +110,23 @@ services:
             GID: 1000
           working_dir: /home/lichess/fishnet
           entrypoint: cargo run -- --endpoint http://lila-fishnet:9665/fishnet/
+
+        lila-stockfish-analysis:
+          image: rust:latest
+          container_name: lila-stockfish-analysis
+          depends_on:
+            - db
+            - redis
+            - lila
+          links:
+            - db:db
+            - redis:redis
+          volumes:
+            - ./fishnet:/home/lichess/fishnet
+          restart: always
+          environment:
+            TZ: Europe/Kiev
+            UID: 1000
+            GID: 1000
+          working_dir: /home/lichess/fishnet
+          entrypoint: cargo run -- --endpoint http://lila:9663/fishnet/
