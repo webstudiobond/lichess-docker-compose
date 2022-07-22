@@ -154,7 +154,7 @@ git clone --recursive https://github.com/lichess-org/fishnet.git ./fishnet
 chown -R 1000:1000 lila-db-seed /home/chess/lichess/{lila,lila-ws,cache,lila-fishnet,fishnet}
 ```
 
-15. Optional: [setup Stockfish analysis](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding#optional-setup-stockfish-analysis). if you don't need it, comment out the service `lila-stockfish-analyse` in `docker-compose.yaml`
+15. Optional: [setup Stockfish analysis](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding#optional-setup-stockfish-analysis). if you don't need it, comment out the service `lila-stockfish-analysis` in `docker-compose.yaml`
 
 16. Run lichess docker compose.
 
