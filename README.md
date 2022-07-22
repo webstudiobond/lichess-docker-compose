@@ -144,6 +144,37 @@ ws.chess.example.com. 1	IN	CNAME   chess.meetings.pp.ua.
 
 In the above commands, `lila` is replaceable by `lila_redis`, `lila_db`, `lila-ws` and any container name in that manner.
 
+## [Populate your database](https://github.com/lichess-org/lila-db-seed#populate-your-database)
+```
+# get full path to lichess folder
+lichess_path=$(realpath .)
+
+# run docker image for lila-db-seed/spamdb/spamdb.py script. lichess_default - network for the working folder lichess (see point 2)
+docker run \
+     --name lila-pip3 \
+     --interactive \
+     --tty \
+     --rm \
+     --volume $lichess_path/lila-db-seed:/home/lichess/lila-db-seed \
+     --user 1000:1000 \
+     --workdir /home/lichess/lila-db-seed \
+     --link lila_db:db \
+     --network lichess_default \
+     sb/lichess_base
+
+# temporary install python & pip, install pymongo
+sudo apt update && sudo apt install python3 python3-pip -y && pip3 install pymongo
+
+# usage help
+python3 /home/lichess/lila-db-seed/spamdb/spamdb.py --help
+
+# example. import users 2 normal users and all special users from ./lila-db-seed/spamdb/data/uids.txt
+python3 /home/lichess/lila-db-seed/spamdb/spamdb.py --uri mongodb://db:27017/lichess --users 2 --password strongpassword_for_users_in_uids_without_password
+
+# exit
+exit
+```
+
 ## TODO
 * Add fishnet.
 * Add "play against the computer"
