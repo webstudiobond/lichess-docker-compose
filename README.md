@@ -6,11 +6,12 @@ Docker compose setup for Lichess development. Based on [`benediktwerner`](https:
 - time, and preferably a coffee machine (or actually, weed)
 
 ## Description
-- `lichess_base`       : A docker image, based on [`debian`](https://hub.docker.com/_/debian)`:stable-slim` that packages Scala, Java & NodeJS.
-- `lila`               : An example `application.conf` config for [lila](https://github.com/ornicar/lila) server.
-- `lila-ws`            : An example `ws.conf` config for [lila-ws](https://github.com/ornicar/lila-ws) server.
-- `nginx_examples`     : An example `nginx.conf` for `chess.exaple.com`.
-- `docker-compose.yaml`: `redis`, `mongo`, `lila` and `lila-ws` services.
+- `lichess_base`                      : A docker image, based on [`debian`](https://hub.docker.com/_/debian)`:stable-slim` that packages Scala, Java & NodeJS.
+- `lila/data/application.conf`.       : An example `application.conf` config for [lila](https://github.com/ornicar/lila) server.
+- `lila-ws/data/ws.conf`              : An example `ws.conf` config for [lila-ws](https://github.com/ornicar/lila-ws) server.
+- `lila-fishnet/data/application.conf`: Example. Same as the original, but with the link changed to redis.
+- `nginx_examples`                    : An example `nginx.conf` for `chess.exaple.com`.
+- `docker-compose.yaml`.              : `redis`, `mongo`, `lila`, `lila-ws` and other services.
 
 ## Usage
 
@@ -151,7 +152,7 @@ exit
 ```
 git clone https://github.com/lichess-org/lila-fishnet.git  ./lila-fishnet
 git clone --recursive https://github.com/lichess-org/fishnet.git ./fishnet
-chown -R 1000:1000 lila-db-seed /home/chess/lichess/{lila,lila-ws,cache,lila-fishnet,fishnet}
+chown -R 1000:1000 lila-db-seed ./{lila,lila-ws,cache,lila-fishnet,fishnet}
 ```
 
 15. Optional: [setup Stockfish analysis](https://github.com/lichess-org/lila/wiki/Lichess-Development-Onboarding#optional-setup-stockfish-analysis). if you don't need it, comment out the service `lila-stockfish-analysis` in `docker-compose.yaml`
